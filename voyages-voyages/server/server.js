@@ -4,8 +4,10 @@ const morgan = require('morgan')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
-const db = require('./db')
+const auth = require('./auth')
+const trips = require('./trips')
 
 
 // ---------------------
@@ -18,7 +20,7 @@ router.use(bodyParser.urlencoded({ extended: false }))
 router.use(bodyParser.json())
 
 app.use(cors())
-
+app.use(cookieParser())
 app.use(morgan('dev'))
 
 const loginRequired = (req, res, next) => {
@@ -26,13 +28,12 @@ const loginRequired = (req, res, next) => {
         next()
     }
     else {
-        return res.status(401).send({ message: "Unauthorized user."})
+        return res.status(401).send({ message: 'Unauthorized user.'})
     }
 }
 
 app.use('/api/trips', (req, res, next) => {
-    console.log(req.headers)
-    const token = (req.body && req.body.token) || req.query.token || req.headers['x-access-token']
+    const token = (req.body && req.body.access_token) || req.query.access_token || req.cookies.access_token
 
     if (token) {
         jwt.verify(token, config.secret, (err, decoded) => {
@@ -71,47 +72,10 @@ router.get('/', (req, res) => {
     res.send({ message: 'Welcome!' })
 })
 
-// - Auth routes
-// -------------
-router.post('/auth/register', (req, res) => {
-    db.register({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        isAdmin: false
-    })
-    .then(user => {
-        res.status(200).send({ name: user.name, email: user.email })
-    })
-    .catch(err => {
-        console.error('Error: ' + err)
-        res.status(500).send("Problem when registering the user.") //TODO: 400 for client errors
-    })
-})
+router.post('/auth/register', auth.register)
+router.post('/auth/signin', auth.signin)
 
-router.post('/auth/signin', (req, res) => {
-    db.signin(req.body.email, req.body.password)
-    .then(user => {
-        if (user) {
-            const token = jwt.sign({ id: user.email }, config.secret, { expiresIn: 300 })
-            res.status(200).send({ auth: true, token: token, name: user.name, email: user.email })
-        }
-        else {
-            res.status(401).send({ message: "Bad credentials." })
-        }
-    })
-    .catch(err => {
-        console.error('Error: ' + err)
-        res.status(500).send("Problem when signing in.") //TODO: 400 for client errors
-    })
-})
-
-// - Trips routes
-// --------------
-router.get('/trips', (req, res) => {
-    res.send([])
-})
-
+router.get('/trips', trips.list)
 
 app.use('/api', router)
 

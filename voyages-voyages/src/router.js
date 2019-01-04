@@ -4,7 +4,8 @@ import Home from './views/Home.vue'
 
 Vue.use(Router)
 
-export default new Router({
+export const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -12,12 +13,31 @@ export default new Router({
       component: Home
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')
+    },
+    {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+    },
+    {
+      path: '*',
+      redirect: '/about'
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(to.path)
+  const publicPages = [ '/login' ]
+  const authRequired = !publicPages.includes(to.path)
+  const loggedIn = localStorage.getItem('user')
+
+  if (authRequired && !loggedIn) {
+    return next('/login')
+  }
+
+  next()
 })

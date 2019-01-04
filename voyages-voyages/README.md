@@ -26,3 +26,10 @@ curl localhost:3000/api/auth/signin -XPOST -d'{"email":"unknownbob@example.com",
 curl localhost:3000/api/auth/signin -XPOST -d'{"email":"bob@example.com","password":"1234"}' -H 'Content-Type: application/json' -v
 ```
 
+* trips
+
+```
+curl localhost:3000/api/trips -XGET -H 'Cookie: access_token=XXXXXXXXX'
+curl localhost:3000/api/trips -XPOST -H 'Cookie: access_token=XXXXXXXXX' -v -d'{"name":"sahara"}'
+```
+

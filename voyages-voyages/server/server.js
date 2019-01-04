@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
+const csrf = require('csurf')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const auth = require('./auth')
@@ -13,6 +14,7 @@ const trips = require('./trips')
 // ---------------------
 // Express configuration
 // ---------------------
+const csrfProtection = csrf({ cookie: true })
 const app = express()
 const router = express.Router()
 
@@ -23,14 +25,6 @@ app.use(cors())
 app.use(cookieParser())
 app.use(morgan('dev'))
 
-const loginRequired = (req, res, next) => {
-    if (req.user) {
-        next()
-    }
-    else {
-        return res.status(401).send({ message: 'Unauthorized user.'})
-    }
-}
 
 app.use('/api/trips', (req, res, next) => {
     const token = (req.body && req.body.access_token) || req.query.access_token || req.cookies.access_token
@@ -49,6 +43,8 @@ app.use('/api/trips', (req, res, next) => {
         return res.status(403).send({ message: 'No token provided.' })
     }
 })
+
+app.use(express.static('./dist'))
 
 // ------------------
 // MongoDB connection
@@ -72,16 +68,18 @@ router.get('/', (req, res) => {
     res.send({ message: 'Welcome!' })
 })
 
-router.post('/auth/register', auth.register)
-router.post('/auth/signin', auth.signin)
+//router.post('/auth/register', csrfProtection, auth.register)
+router.get('/auth/csrftoken', csrfProtection, auth.getCsrfToken)
+router.post('/auth/signin', csrfProtection, auth.signin)
 
-router.get('/trips', trips.list)
+router.post('/trips', csrfProtection, trips.create)
+router.get('/trips', csrfProtection, trips.list)
 
 app.use('/api', router)
 
-app.all('*', (req, res) => {
+/*app.all('*', (req, res) => {
     res.status(404).send({ message: 'Hmmm... are you lost?' })
-})
+})*/
 
 
 // ------------------

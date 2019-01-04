@@ -14,6 +14,15 @@
   </div>
 </template>
 
+<script>
+import services from './services'
+
+export default {
+  mounted() {
+    services.csrfToken()
+  }
+}
+</script>
 
 <style>
 #app {

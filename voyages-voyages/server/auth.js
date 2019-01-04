@@ -1,4 +1,4 @@
-const db = require('./db')
+const db = require('./userdb')
 const jwt = require('jsonwebtoken')
 const config = require('./config')
 
@@ -36,4 +36,8 @@ const signin = (req, res) => {
     })
 }
 
-module.exports = { register, signin }
+const getCsrfToken = (req, res) => {
+    return res.json({ csrfToken: req.csrfToken() })
+}
+
+module.exports = { register, signin, getCsrfToken }

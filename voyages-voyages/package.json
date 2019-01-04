@@ -9,9 +9,11 @@
     "prod": "node ./server/server.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
+    "csurf": "^1.9.0",
     "element-ui": "^2.4.11",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",

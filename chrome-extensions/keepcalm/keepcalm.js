@@ -14,7 +14,16 @@ function changeVisibility(className) {
 
 // For Booking.com
 
-[ 'd-deal-b', 'js_sr_persuation_msg' ].forEach(changeVisibility);
+[ 'd-deal-b', 'js_sr_persuation_msg', 'strike-it-red_anim', 'crossedout-price-icon' ].forEach(changeVisibility);
+
+document.querySelectorAll('strong.scarcity_color b').forEach(elt => {
+  if (display !== '') {
+    elt.style.color = '#0ab21b';
+  }
+  else {
+    elt.style.color = '#ff0202';
+  }
+});
 
 // For Trivago
 
@@ -22,16 +31,17 @@ function changeVisibility(className) {
 
 // For Hotels.com
 
-[ 'special-deal', 'scarcity-message' ].forEach(changeVisibility);
+[ 'special-deal', 'scarcity-message', 'hotel-badge' ].forEach(changeVisibility);
 
 document.querySelectorAll('#listings .price del').forEach(elt => {
   elt.style.display = display;
 });
 
 document.querySelectorAll('#listings .scarcity-message + a b').forEach(elt => {
-  if (display != '') {
+  if (display !== '') {
     elt.style.color = '#333';
   }
-
-  // d32f2f
+  else {
+    elt.style.color = '#d32f2f'; 
+  }
 });

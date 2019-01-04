@@ -9,11 +9,11 @@ function setStatus(newStatus) {
 function updatePage() {
   chrome.storage.sync.get('keepCalmStatus', (data) => {
 
-    let status = data.keepCalmStatus;
+    let newStatus = data.keepCalmStatus === 'remove-ads' ? 'with-ads' : 'remove-ads';
     
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      let imgName = status + '-16.png';
-      let display = status === 'remove-ads' ? 'none': '';
+      let imgName = newStatus + '-16.png';
+      let display = newStatus === 'remove-ads' ? 'none': '';
 
       chrome.pageAction.setIcon({ tabId: tabs[0].id, path: 'images/' + imgName });
 
@@ -27,7 +27,7 @@ function updatePage() {
         });
       });
 
-      setStatus(status === 'remove-ads' ? 'with-ads' : 'remove-ads');
+      setStatus(newStatus);
   });
 };
 

@@ -1,8 +1,8 @@
 {
-  "name": "Keep Calm",
+  "name": "Keep Calm (and book quietly)",
   "version": "1.0.0",
   "author": "Bruno Bonnin",
-  "description": "Hide some parts of pages with agressive ads",
+  "description": "Remove the persuavise messages and get only the raw informations: the hotels and their price.",
   "permissions": [
     "activeTab", 
     "declarativeContent", 

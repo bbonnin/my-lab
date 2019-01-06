@@ -1,8 +1,13 @@
 {
   "name": "Keep Calm",
-  "version": "1.0",
+  "version": "1.0.0",
+  "author": "Bruno Bonnin",
   "description": "Hide some parts of pages with agressive ads",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "permissions": [
+    "activeTab", 
+    "declarativeContent", 
+    "storage"
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
@@ -16,12 +21,16 @@
       "96": "images/with-ads-96.png"
     }
   },
+  "content_scripts": [{
+     "matches": ["https://*.booking.com/*", "https://*.hotels.com/*", "https://*.trivago.fr/*", "https://*.trivago.com/*"],
+     "js": ["keepcalm.js"]
+   }
+  ],
   "icons": {
     "16": "images/with-ads-16.png",
     "32": "images/with-ads-32.png",
     "48": "images/with-ads-48.png",
     "96": "images/with-ads-96.png"
   },
-  "options_page": "options.html",
   "manifest_version": 2
 }
